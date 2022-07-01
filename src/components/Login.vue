@@ -37,12 +37,14 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
 	data () {
 		return {
 			loginForm: {
-				username: '',
-				password: '',
+				username: 'admin',
+				password: '123456',
+				identify: 0,
 			},
 			loginFormRules: {
 				username: [
@@ -62,10 +64,20 @@ export default {
 
 		},
 		login () {
-			this.$refs.loginFormRef.validate((valid) => {
-				console.log(valid)
+			this.$refs.loginFormRef.validate().then(() => {
+				// this.$ref.message.success('登录成功')
+				request({
+					method: '',
+					url: '',
+
+				})
+				this.$router.push('/index')
 			})
-			this.$router.push('/home')
+				.catch(() => {
+					this.$ref.message.error('登录失败，请检查账号和密码')
+
+				})
+
 		}
 	}
 

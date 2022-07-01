@@ -5,11 +5,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    isCollapse: true
   },
   mutations: {
+    collapseMenu(state) {
+      state.isCollapse = !state.isCollapse
+    }
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })

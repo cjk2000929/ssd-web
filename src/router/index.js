@@ -1,24 +1,90 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/components/Login'
-import Home from '@/components/Home'
-import classSelection from '@/views/classSelection'
-import index from '@/views/index.vue'
+import CourseSelection from '@/views/CourseSelection'
+import CourseDrop from '@/views/CourseDrop'
+import CreditCheck from '@/views/CreditCheck'
+import AddCourse from '@/views/AddCourse'
+import DeleteCourse from '@/views/DeleteCourse'
+import ReleaseNotice from '@/views/ReleaseNotice'
+import ExamArrangement from '@/views/ExamArrangement'
+import News from '@/views/News'
+import Index from '@/views/Index.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/Login'
+    name: 'login',
+    component: Login,
+    meta: {
+      keepAlive: false
+    }
+  },
+
+  {
+    path: '/index',
+    component: Index,
+    meta: {
+      keepAlive: true
+    }
   },
   {
-    path: '/login',
-    component: Login
+    path: '/cselection',
+    component: CourseSelection,
+    meta: {
+      keepAlive: true
+    }
   },
   {
-    path: '/home',
-    component: Home,
-    children: [{ path: '', component: index }]
+    path: '/cdrop',
+    component: CourseDrop,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/creditCheck',
+    component: CreditCheck,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/addcourse',
+    component: AddCourse,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/deletecourse',
+    component: DeleteCourse,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/releasenotice',
+    component: ReleaseNotice,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/exam',
+    component: ExamArrangement,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/news',
+    component: News,
+    meta: {
+      keepAlive: true
+    }
   }
 ]
 
