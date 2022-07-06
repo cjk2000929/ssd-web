@@ -3,20 +3,29 @@ import VueRouter from 'vue-router'
 import Login from '@/components/Login'
 import CourseSelection from '@/views/CourseSelection'
 import CourseDrop from '@/views/CourseDrop'
-import CreditCheck from '@/views/CreditCheck'
 import AddCourse from '@/views/AddCourse'
 import DeleteCourse from '@/views/DeleteCourse'
 import ReleaseNotice from '@/views/ReleaseNotice'
+import ReleaseExam from '@/views/ReleaseExam'
 import ExamArrangement from '@/views/ExamArrangement'
 import News from '@/views/News'
-import Index from '@/views/Index.vue'
+import Notastudent from '@/views/Notastudent'
+import Notateacher from '@/views/Notateacher'
+import index from '@/views/index.vue'
 
 Vue.use(VueRouter)
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 const routes = [
   {
     path: '/',
-    name: 'login',
+    redirect: 'login'
+  },
+  {
+    path: '/login',
     component: Login,
     meta: {
       keepAlive: false
@@ -25,7 +34,7 @@ const routes = [
 
   {
     path: '/index',
-    component: Index,
+    component: index,
     meta: {
       keepAlive: true
     }
@@ -44,13 +53,7 @@ const routes = [
       keepAlive: true
     }
   },
-  {
-    path: '/creditCheck',
-    component: CreditCheck,
-    meta: {
-      keepAlive: true
-    }
-  },
+
   {
     path: '/addcourse',
     component: AddCourse,
@@ -80,8 +83,29 @@ const routes = [
     }
   },
   {
+    path: '/releaseexam',
+    component: ReleaseExam,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/news',
     component: News,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/notastudent',
+    component: Notastudent,
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
+    path: '/notateacher',
+    component: Notateacher,
     meta: {
       keepAlive: true
     }
@@ -91,5 +115,13 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+//挂载路由导航守卫
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/login') next()
+//   const tokenStr = window.sessionStorage.getItem('token')
+//   // 增加判断条件
+//   if (!tokenStr && to.path !== '/login') return next('/login')
+//   next()
+// })
 
 export default router

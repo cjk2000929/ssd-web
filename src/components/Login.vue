@@ -8,7 +8,7 @@
 							 label-width="0px"
 							 class="login_form">
 				<div class="login_title">
-					<h3>登录页面</h3>
+					<h3>高校智慧门户</h3>
 				</div>
 				<!-- 用户名 -->
 				<el-form-item prop="username">
@@ -21,6 +21,16 @@
 										v-model="loginForm.password"
 										prefix-icon="el-icon-lock"
 										show-password>密码</el-input>
+				</el-form-item>
+				<el-form-item prop="identify"
+											class="identify_container">
+					<el-radio-group v-model="loginForm.identify">
+
+						<el-radio label="radio1"
+											@change="valueChange(1)">教师</el-radio>
+						<el-radio label="radio2"
+											@change="valueChange(0)">学生</el-radio>
+					</el-radio-group>
 				</el-form-item>
 
 				<el-form-item class="btns">
@@ -37,14 +47,16 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import axios from 'axios'
 export default {
 	data () {
 		return {
+			value: 1,
 			loginForm: {
-				username: 'admin',
-				password: '123456',
-				identify: 0,
+				username: '',
+				password: '',
+				identify: '',
+
 			},
 			loginFormRules: {
 				username: [
@@ -54,29 +66,63 @@ export default {
 				password: [
 					{ required: true, message: '请输入登录密码', trigger: 'blur' },
 					{ min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+				],
+				identify: [
+					{
+						required: true,
+						message: "请选择身份",
+						trigger: "change"
+					}
 				]
 			}
 		}
 	},
 	methods: {
+		valueChange (number) {
+			this.value = number
+			console.log(this.value)
+		},
+
 		resetLoginForm () {
 			this.$refs.loginFormRef.resetFields()
 
 		},
 		login () {
-			this.$refs.loginFormRef.validate().then(() => {
-				// this.$ref.message.success('登录成功')
-				request({
-					method: '',
-					url: '',
+			this.$refs.loginFormRef.validate(valid => {
+				if (!valid) return;
 
-				})
-				this.$router.push('/index')
+				axios.post('/api/user/login',
+					{
+						username: this.loginForm.username,
+						password: this.loginForm.password,
+						identify: this.value
+					}
+				).then(res => {
+					console.log(res)
+
+
+					this.$message.success('登录成功')
+					this.$store.commit('set_token', res.data.token)
+					this.$store.commit('identifySelect', this.value)
+					window.sessionStorage.setItem('token', res.data.token)
+
+					if (this.$store.state.token) {
+
+						this.$router.push('/index')
+
+						console.log(this.$store.state.token)
+
+					} else {
+						this.$router.replace('/login');
+
+					}
+
+
+				}).catch()
+
+
 			})
-				.catch(() => {
-					this.$ref.message.error('登录失败，请检查账号和密码')
 
-				})
 
 		}
 	}
@@ -88,10 +134,13 @@ export default {
 	background-color: #2b4b6b;
 	height: 100vh;
 }
+.identity_container {
+	text-align: center;
+}
 .login_box {
 	background: white;
 	width: 450px;
-	height: 250px;
+	height: 350px;
 	position: absolute;
 	left: 50%;
 	top: 50%;

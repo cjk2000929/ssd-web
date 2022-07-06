@@ -7,34 +7,36 @@
 			</div>
 			<!-- table表格区域 -->
 
-			<el-table :data="coursesList"
-								border
-								stripe>
-				<el-table-column width="150px"
-												 prop="courses_id"
-												 label="课程ID"></el-table-column>
-				<el-table-column label="课程编号"
-												 prop="courses_number"
-												 width="150px"></el-table-column>
-				<el-table-column label="课程名"
-												 prop="courses_name"></el-table-column>
-				<el-table-column label="授课老师"
-												 prop="teachers_name"
-												 width="150px">
-					<template slot-scope="{}">
+			<el-table border
+								stripe
+								:data="courseLists">
 
-					</template>
+				<el-table-column label="课程编号"
+												 prop="courseNumber"
+												 width="250px"></el-table-column>
+				<el-table-column label="课程名称"
+												 prop="courseName"></el-table-column>
+
+				<el-table-column label="授课老师"
+												 prop="courseTeacherName"
+												 width="150px">
 				</el-table-column>
 				<el-table-column label="人数限制"
-												 prop="students_limit"
+												 prop="coursePersonLimit"
 												 width="150px"></el-table-column>
+				<el-table-column width="150px"
+												 prop="courseSelectNumber"
+												 label="已选人数"></el-table-column>
 
 				<el-table-column label="退出课程"
-												 width="150px">
-					<template slot-scope="{}">
-						<el-button type="info"
-											 icon="el-icon-edit"
-											 size="mini"></el-button>
+												 width="150px"
+												 prop="courseId">
+					<template slot-scope="scope">
+						<el-button type="danger"
+											 icon="el-icon-minus"
+											 size="mini"
+											 v-show="showButton"
+											 @click="Drop(scope.row.courseId)"></el-button>
 
 					</template>
 				</el-table-column>
@@ -46,43 +48,69 @@
 
 
 <script>
+import axios from 'axios'
 export default {
 	data () {
 		return {
-			//查询参数对象
-			queryInfo: {
-				query: '',
-				pagenum: 1,
-				pagesize: 10
-			},
-			// 商品列表
-			goodsList: [],
-			// 总数据条数
-			total: 0
+			courseLists: [],
+			showButton: true
+		}
+	},
+	methods: {
+		Drop (value) {
+			console.log(value);
+			console.log(this.$store.getters.getToken);
+			// axios({
+			// 	url: '/api/courseSelection',
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'multipart/form-data',
+			// 		token: this.$store.getters.getToken,
+			// 	},
+			// 	data: {
+			// 		courseSelectionCourseId: value,
+			// 	}
+
+			// }).then(res => {
+			// 	console.log(res)
+			// })
+			axios.delete('/api/courseSelection', {
+				params: { id: value },
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					'token': this.$store.getters.getToken,
+
+				}
+			}).then(
+				res => {
+					console.log(res);
+					this.$message.success('退课成功')
+					window.location.reload()
+				}
+			)
+			// .catch(
+			// 	// this.$message.error('请确认是否为学生登录')
+			// )
 		}
 	},
 
 	created () {
-		this.getGoodsList()
+		axios({
+			url: '/api/course/choosed',
+			method: 'GET',
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'token': this.$store.getters.getToken,
+
+			}
+		}).then(
+			res => {
+				console.log(res);
+				this.courseLists = res.data
+			}
+		)
 	},
-	methods: {
-		// 根据id删除对应的商品
-		async removeById (id) {
-			const confirmResult = await this.$confirm('此操作将永久删除该商品，是否继续？', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning'
-			}).catch(err => err)
-			// 用户取消了删除操作
-			if (confirmResult !== 'confirm') return this.$message.info('已取消删除！')
-			// 删除的业务逻辑
-			const { data: res } = await this.$http.delete('goods/' + id)
-			if (res.meta.status !== 200) return this.$message.error('删除商品失败！')
-			// 删除成功就关闭对话框并重新刷新列表数据
-			this.$message.success('删除商品成功!')
-			this.getGoodsList()
-		},
-	},
+
 }
 
 </script>

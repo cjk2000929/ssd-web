@@ -16,13 +16,12 @@
 				</template>
 				<el-menu-item-group>
 					<el-menu-item index="1-1"
-												@click="toOtherviews('./cselection')">选课</el-menu-item>
+												@click="toStudent('./cselection')">选课</el-menu-item>
 					<el-menu-item index="1-2"
-												@click="toOtherviews('./cdrop')">退课</el-menu-item>
+												@click="toStudent('./cdrop')">退课</el-menu-item>
 					<el-menu-item index="1-3"
-												@click="toOtherviews('./exam')">考试安排</el-menu-item>
-					<el-menu-item index="1-4"
-												@click="toOtherviews('./creditCheck')">学分查询</el-menu-item>
+												@click="toStudent('./exam')">考试安排</el-menu-item>
+
 				</el-menu-item-group>
 
 			</el-submenu>
@@ -33,11 +32,14 @@
 				</template>
 				<el-menu-item-group>
 					<el-menu-item index="2-1"
-												@click="toOtherviews('./addcourse')">添加课程</el-menu-item>
+												@click="toTeacher('./addcourse')">添加课程</el-menu-item>
 					<el-menu-item index="2-2"
-												@click="toOtherviews('./deletecourse')">删除课程</el-menu-item>
+												@click="toTeacher('./deletecourse')">删除课程</el-menu-item>
 					<el-menu-item index="2-3"
-												@click="toOtherviews('./releasenotice')">发布通告</el-menu-item>
+												@click="toTeacher('./releaseexam')">发布考试</el-menu-item>
+					<el-menu-item index="2-4"
+												@click="toTeacher('./releasenotice')">发布通告</el-menu-item>
+
 				</el-menu-item-group>
 
 			</el-submenu>
@@ -47,11 +49,17 @@
 				<i class="el-icon-news"></i>
 				<span slot="title">新闻资讯</span>
 			</el-menu-item>
+			<el-menu-item index="4"
+										@click="logOut">
+				<i class="el-icon-switch-button"></i>
+				<span slot="title">退出</span>
+			</el-menu-item>
 		</el-menu>
 	</div>
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
 	name: 'Left',
@@ -59,6 +67,34 @@ export default {
 		toOtherviews (url) {
 			this.$router.push(url)
 		},
+		toStudent (url) {
+			// if (this.$store.state.identify === 0) {
+			// 	this.$router.push(url)
+			// } else (
+			// 	this.$router.push('./notastudent')
+			// )
+			this.$router.push(url)
+
+		},
+		toTeacher (url) {
+			// if (this.$store.state.identify === 1) {
+			// 	this.$router.push(url)
+			// } else (
+			// 	this.$router.push('./notateacher')
+			// )
+			this.$router.push(url)
+
+		},
+		logOut () {
+			console.log('退出登录')
+			axios.get('/api/user/logout').then(() => {
+				this.$store.commit('del_token')
+				window.sessionStorage.removeItem('token')
+				this.$router.push('./login')
+
+			})
+
+		}
 	},
 	computed: {
 		isCollapse () {

@@ -18,30 +18,60 @@
 
 			<div class="news_container">
 				<el-row class="content_row">
-					<el-col :xs="24"
-									:sm="24"
-									:md="24"
-									:lg="12"
-									:xl="12"
-									class="news">
-						<el-tabs>
+					<el-col class="news">
+						<el-tabs :tab-position="tabPosition"
+										 style="height:100%">
 							<el-tab-pane label="热点新闻"
-													 name="hot">
-								<ul>
-									<li></li>
-								</ul>
+													 name="hot"
+													 :span="1.5">
+								<el-table :data="hotLists"
+													size="medium">
+									<el-table-column prop="hotTime"
+																	 label="时间"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+									<el-table-column prop="hotTitle"
+																	 label="标题"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+								</el-table>
+
 							</el-tab-pane>
-							<el-tab-pane label="学术热点"
+							<el-tab-pane label="学术资讯"
 													 name="study">
-								<ul>
-									<li></li>
-								</ul>
+
+								<el-table :data="academicLists"
+													size="medium"
+													show-header="">
+									<el-table-column prop="academicTime"
+																	 label="时间"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+									<el-table-column prop="academicTitle"
+																	 label="标题"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+								</el-table>
 							</el-tab-pane>
 							<el-tab-pane label="校园快讯"
 													 name="school">
-								<ul>
-									<li></li>
-								</ul>
+								<el-table :data="noticeLists"
+													size="medium">
+									<el-table-column prop="noticeTime"
+																	 label="时间"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+									<el-table-column prop="noticeTitle"
+																	 label="标题"
+																	 height="50px"
+																	 align="center">
+									</el-table-column>
+								</el-table>
 							</el-tab-pane>
 						</el-tabs>
 					</el-col>
@@ -135,19 +165,69 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
 	data () {
 		return {
 			imgList: [
 				{ id: 0, idView: require('../assets/banner/banner.jpg') },
 				{ id: 1, idView: require('../assets/banner/banner2.jpg') },
-				{ id: 2, idView: require('../assets/banner/banner3.jpg') }]
+				{ id: 2, idView: require('../assets/banner/banner3.jpg') }],
+			academicLists: [],
+			hotLists: [],
+			noticeLists: [],
+			tabPosition: 'left'
 		}
 	},
 	methods: {
 		toOtherwebs (url) {
 			window.open(url, '_blank')
-		}
+		},
+
+	},
+	created () {
+
+		axios({
+			url: '/api/academic/',
+			method: 'GET',
+			params: {
+				pageIndex: 0,
+				pageSize: 6,
+
+			}
+		}).then(res => {
+			console.log(res);
+			this.academicLists = res.data.content
+			console.log(this.academicLists)
+		}),
+			axios({
+				url: '/api/hot/',
+				method: 'GET',
+				params: {
+					pageIndex: 0,
+					pageSize: 6,
+
+				}
+			}).then(res => {
+				console.log(res);
+				this.hotLists = res.data.content
+				console.log(this.hotLists)
+			}),
+			axios({
+				url: '/api/notice/',
+				method: 'GET',
+				params: {
+					pageIndex: 0,
+					pageSize: 6,
+
+				}
+			}).then(res => {
+				console.log(res);
+				this.noticeLists = res.data.content
+				console.log(this.noticeLists)
+			})
+
+
 	}
 
 }
@@ -161,8 +241,9 @@ export default {
 	margin: 0;
 }
 .news_container {
-	height: 350px;
+	height: 600px;
 	width: 700px;
+	margin-top: 50px;
 }
 .news {
 	/* width: 50%; */
@@ -188,6 +269,7 @@ export default {
 }
 .apps_container {
 	width: 450px;
+	margin-top: 50px;
 }
 .grid-content {
 	height: 80px;
