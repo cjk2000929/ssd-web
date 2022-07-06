@@ -178,20 +178,27 @@ export default {
 	},
 
 	created () {
-		axios({
-			url: '/api/course/choosed',
-			method: 'GET',
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				'token': this.$store.getters.getToken,
+		// axios({
+		// 	url: '/api/course/choosed',
+		// 	method: 'GET',
+		// 	headers: {
+		// 		'Content-Type': 'multipart/form-data',
+		// 		'token': this.$store.getters.getToken,
 
-			}
-		}).then(
-			res => {
-				console.log(res);
-				this.courseLists = res.data
-			}
-		)
+		// 	}
+		// }).then(
+		// 	res => {
+		// 		console.log(res);
+		// 		this.courseLists = res.data
+		// 	}
+		// )
+		axios.get('/api/course').then(res => {
+			console.log(res);
+			this.courseLists = res.data
+		})
+
+
+
 	},
 
 }

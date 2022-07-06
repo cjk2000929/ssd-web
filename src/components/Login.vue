@@ -105,11 +105,15 @@ export default {
 					this.$store.commit('set_token', res.data.token)
 					this.$store.commit('identifySelect', this.value)
 					window.sessionStorage.setItem('token', res.data.token)
-
+					window.sessionStorage.setItem('identify', res.data.identify)
 					if (this.$store.state.token) {
 
 						this.$router.push('/index')
-
+						if (res.data.identify == 1) {
+							this.$message.success("教师:" + res.data.username + '登录成功')
+						} else if (res.data.identify == 0) {
+							this.$message.success("学生:" + res.data.username + '登录成功')
+						}
 						console.log(this.$store.state.token)
 
 					} else {

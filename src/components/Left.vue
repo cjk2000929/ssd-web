@@ -68,21 +68,21 @@ export default {
 			this.$router.push(url)
 		},
 		toStudent (url) {
-			// if (this.$store.state.identify === 0) {
-			// 	this.$router.push(url)
-			// } else (
-			// 	this.$router.push('./notastudent')
-			// )
-			this.$router.push(url)
+			if (window.sessionStorage.getItem('identify') === '0') {
+				this.$router.push(url)
+			} else (
+				this.$router.push('./notastudent')
+			)
+			// this.$router.push(url)
 
 		},
 		toTeacher (url) {
-			// if (this.$store.state.identify === 1) {
-			// 	this.$router.push(url)
-			// } else (
-			// 	this.$router.push('./notateacher')
-			// )
-			this.$router.push(url)
+			if (window.sessionStorage.getItem('identify') === '1') {
+				this.$router.push(url)
+			} else (
+				this.$router.push('./notateacher')
+			)
+			// this.$router.push(url)
 
 		},
 		logOut () {
